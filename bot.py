@@ -8,7 +8,7 @@ import threading
 
 # ---------------- Environment ----------------
 TOKEN = os.environ.get("DISCORD_TOKEN")
-PREFIX = os.environ.get("PREFIX", "!")
+PREFIX = "!"
 GUILD_ID = int(os.environ.get("GUILD_ID", 0))  # For testing slash commands in one server
 
 # ---------------- Bot Setup ----------------
@@ -18,7 +18,7 @@ intents.guilds = True
 intents.members = True
 intents.message_content = True
 
-bot = commands.Bot(command_prefix=PREFIX, intents=intents)
+bot = commands.Bot(command_prefix=PREFIX, intents=intents, help_command=None)
 tree = bot.tree  # for slash commands
 
 # 8ball responses
@@ -49,7 +49,7 @@ Commands available:
 - !timeout <@user> <seconds> → temporarily mutes member
 """)
 
-@bot.command()
+@bot.command(name="8ball")
 async def _8ball(ctx, *, question: str):
     response = random.choice(responses)
     await ctx.send(f"🎱 {response}")
@@ -79,7 +79,7 @@ async def ban(ctx, member: discord.Member):
 @bot.command()
 @commands.has_permissions(moderate_members=True)
 async def timeout(ctx, member: discord.Member, seconds: int):
-    await member.timeout(duration=discord.Duration(seconds=seconds))
+    await member.timeout(duration=seconds)
     await ctx.send(f"{member} has been timed out for {seconds} seconds.")
 
 # ---------------- SLASH COMMANDS ----------------
@@ -141,8 +141,12 @@ async def timeout_slash(interaction: discord.Interaction, user: discord.Member, 
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}!")
-    await tree.sync(guild=discord.Object(id=GUILD_ID))
-    print("Slash commands synced!")
+    if GUILD_ID:
+        await tree.sync(guild=discord.Object(id=GUILD_ID))
+        print("Slash commands synced to your guild!")
+    else:
+        await tree.sync()
+        print("Global slash commands synced!")
 
 # ---------------- Flask web server ----------------
 app = Flask(__name__)
@@ -289,10 +293,8 @@ def home():
     </html>
     """
 
-
 # Start Flask in background
 threading.Thread(target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 3000)))).start()
 
 # ---------------- Run bot ----------------
 bot.run(TOKEN)
-
