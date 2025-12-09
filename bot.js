@@ -155,7 +155,7 @@ app.get("/", (req, res) => {
       </head>
       <body>
         <h1>Celestia Bot is Online!</h1>
-        <p>Join our Discord server: <a href="https://discord.gg/YOUR_SERVER_LINK">Click Here</a></p>
+        <p>Join our Discord server: <a href="https://discord.gg/yJTE5v9h">Click Here</a></p>
         <img src="https://cdn.discordapp.com/attachments/1410769852519678053/1448084326389518366/514a37c7899487b062fea779072a3716.jpg?ex=6939f91f&is=6938a79f&hm=9abba8902399090299a523107a61e1d42ebbcb0a02095b0c1171ebf568c7614e&" alt="Celestia Bot"/>
       </body>
     </html>
