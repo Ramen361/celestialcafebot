@@ -181,7 +181,8 @@ def home():
         <h1>Celestia Bot is Online!</h1>
         <p>Join our Discord server: <a href="https://discord.gg/YOUR_SERVER_LINK">Click Here</a></p>
         <img src="https://cdn.discordapp.com/attachments/1410769852519678053/1448084326389518366/514a37c7899487b062fea779072a3716.jpg" 
-             alt="Celestia Bot" style="border-radius:20px; width:50%; max-width:300px;">
+     alt="Celestia Bot" style="border-radius:20px; width:50%; max-width:300px;">
+
       </div>
       <script>
         const canvas = document.getElementById('stars');
