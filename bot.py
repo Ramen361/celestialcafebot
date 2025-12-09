@@ -22,7 +22,7 @@ bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 tree = bot.tree  # for slash commands
 
 # 8ball responses
-responses = ["Yes.","No.","Maybe.","Definitely.","Absolutely not!","I have no idea.","Ask again later."]
+responses = ["Yes.","No.","Maybe.","Definitely.","Absolutely not!","I have no idea.","Ask again later.","100%","Most Likely."]
 
 # ---------------- PREFIX COMMANDS ----------------
 @bot.command()
@@ -173,7 +173,7 @@ def home():
       </head>
       <body>
         <h1>Celestia Bot is Online!</h1>
-        <p>Join our Discord server: <a href="https://discord.gg/YOUR_SERVER_LINK">Click Here</a></p>
+        <p>Join our Discord server: <a href="https://discord.gg/yJTE5v9h">Click Here</a></p>
         <img src="https://cdn.discordapp.com/attachments/1410769852519678053/1448084326389518366/514a37c7899487b062fea779072a3716.jpg" alt="Celestia Bot"/>
       </body>
     </html>
