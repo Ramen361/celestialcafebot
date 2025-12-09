@@ -151,33 +151,144 @@ app = Flask(__name__)
 def home():
     return """
     <html>
-      <head>
-        <title>Celestia Bot</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-          body { 
-            background: #a8dadc;
-            color: #1d3557;
-            font-family: 'Arial', sans-serif; 
-            text-align: center; 
-            padding: 50px 20px;   
-            margin: 0;
-          }
-          h1 { color: #457b9d; font-size: 6vw; margin-bottom: 20px; }
-          p { font-size: 4vw; margin-bottom: 20px; }
-          a { color: #1d3557; text-decoration: none; font-weight: bold; font-size: 4vw; }
-          a:hover { color: #e63946; }
-          img { border-radius: 20px; margin-top: 20px; width: 50%; max-width: 300px; height: auto; }
-          @media (min-width: 768px) { h1 { font-size: 48px; } p, a { font-size: 20px; } }
-        </style>
-      </head>
-      <body>
+    <head>
+      <title>Celestia Bot</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body { 
+          background: #a8dadc;  /* light blue background */
+          color: #1d3557;        /* dark blue text */
+          font-family: 'Arial', sans-serif; 
+          text-align: center; 
+          margin: 0;
+          overflow: hidden;
+        }
+        h1 { color: #457b9d; font-size: 6vw; margin: 20px 0; }
+        p { font-size: 4vw; }
+        a { color: #1d3557; text-decoration: none; font-weight: bold; font-size: 4vw; }
+        a:hover { color: #e63946; }
+        canvas { position: absolute; top: 0; left: 0; z-index: 0; }
+        #content { position: relative; z-index: 1; padding: 50px 20px; }
+      </style>
+    </head>
+    <body>
+      <canvas id="stars"></canvas>
+      <div id="content">
         <h1>Celestia Bot is Online!</h1>
-        <p>Join our Discord server: <a href="https://discord.gg/yJTE5v9h">Click Here</a></p>
-        <img src="https://cdn.discordapp.com/attachments/1410769852519678053/1448084326389518366/514a37c7899487b062fea779072a3716.jpg" alt="Celestia Bot"/>
-      </body>
+        <p>Join our Discord server: <a href="https://discord.gg/YOUR_SERVER_LINK">Click Here</a></p>
+        <img src="https://cdn.discordapp.com/attachments/1410769852519678053/1448084326389518366/514a37c7899487b062fea779072a3716.jpg" 
+             alt="Celestia Bot" style="border-radius:20px; width:50%; max-width:300px;">
+      </div>
+      <script>
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        class Star {
+          constructor() {
+            this.reset();
+          }
+          reset() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.size = Math.random() * 3 + 2;
+            this.baseSize = this.size;
+            this.angle = Math.random() * 2 * Math.PI;
+            this.radius = Math.random() * 20 + 10;
+            this.speed = Math.random() * 0.01 + 0.002;
+            this.popping = false;
+            this.particles = [];
+          }
+          update() {
+            if (!this.popping) {
+              this.angle += this.speed;
+              this.x += Math.cos(this.angle) * 0.5;
+              this.y += Math.sin(this.angle) * 0.5;
+            } else {
+              this.particles.forEach(p => p.update());
+              this.particles = this.particles.filter(p => !p.done);
+              if (this.particles.length === 0) this.popping = false;
+            }
+          }
+          draw() {
+            if (!this.popping) {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+              ctx.fillStyle = 'yellow';
+              ctx.fill();
+            } else {
+              this.particles.forEach(p => p.draw());
+            }
+          }
+          pop() {
+            this.popping = true;
+            this.particles = [];
+            for (let i=0; i<10; i++) {
+              this.particles.push(new Particle(this.x, this.y));
+            }
+          }
+          isClicked(mx, my) {
+            return !this.popping && Math.hypot(this.x-mx, this.y-my) < this.size;
+          }
+        }
+
+        class Particle {
+          constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random()-0.5)*3;
+            this.vy = (Math.random()-0.5)*3;
+            this.life = 30 + Math.random()*20;
+            this.size = 2 + Math.random()*2;
+            this.done = false;
+          }
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life--;
+            if (this.life <=0) this.done = true;
+          }
+          draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+            ctx.fillStyle = 'yellow';
+            ctx.fill();
+          }
+        }
+
+        let stars = [];
+        for (let i=0;i<30;i++) stars.push(new Star());
+
+        canvas.addEventListener('click', e=>{
+          const rect = canvas.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          const my = e.clientY - rect.top;
+          stars.forEach(star=>{
+            if (star.isClicked(mx,my)) star.pop();
+          });
+        });
+
+        function animate() {
+          ctx.clearRect(0,0,width,height);
+          stars.forEach(s=>{
+            s.update();
+            s.draw();
+          });
+          requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', ()=>{
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        });
+      </script>
+    </body>
     </html>
     """
+
 
 # Start Flask in background
 threading.Thread(target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 3000)))).start()
