@@ -107,7 +107,61 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => res.send("Bot is online!"));
+app.get("/", (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>Celestia Bot</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body { 
+            background: #a8dadc;  /* light blue background */
+            color: #1d3557;       /* dark blue text */
+            font-family: 'Arial', sans-serif; 
+            text-align: center; 
+            padding: 50px 20px;   /* add horizontal padding for mobile */
+            margin: 0;
+          }
+          h1 { 
+            color: #457b9d;       /* heading color */
+            font-size: 6vw;       /* responsive heading size */
+            margin-bottom: 20px;
+          }
+          p { 
+            font-size: 4vw;       /* responsive paragraph size */
+            margin-bottom: 20px; 
+          }
+          a { 
+            color: #1d3557; 
+            text-decoration: none; 
+            font-weight: bold;
+            font-size: 4vw;
+          }
+          a:hover { 
+            color: #e63946;      /* red on hover */
+          }
+          img { 
+            border-radius: 20px; 
+            margin-top: 20px;
+            width: 50%;           /* responsive image width */
+            max-width: 300px;     /* limit image size on big screens */
+            height: auto;
+          }
+          @media (min-width: 768px) {
+            h1 { font-size: 48px; }
+            p, a { font-size: 20px; }
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Celestia Bot is Online!</h1>
+        <p>Join our Discord server: <a href="https://discord.gg/YOUR_SERVER_LINK">Click Here</a></p>
+        <img src="https://cdn.discordapp.com/attachments/1410769852519678053/1448084326389518366/514a37c7899487b062fea779072a3716.jpg?ex=6939f91f&is=6938a79f&hm=9abba8902399090299a523107a61e1d42ebbcb0a02095b0c1171ebf568c7614e&" alt="Celestia Bot"/>
+      </body>
+    </html>
+  `);
+});
+
 app.listen(PORT, () => console.log(`Web server running on port ${PORT}`));
 
 // Log in
